@@ -1,0 +1,12 @@
+{
+  "hints": [],
+  "groups": [],
+  "properties": [
+    {
+      "sourceType": "",
+      "name": "module.name",
+      "description": "模块名称（用于数据权限筛选）:例如 RES,MES,WMS",
+      "type": "java.lang.String"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crrcdt.backup.mapper.UserMapper">
+    <!-- 开启二级缓存 -->
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.crrcdt.backup.model.User">
+        <result column="id" property="id"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="remarks" property="remarks"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="login_flag" property="loginFlag"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="login_date" property="loginDate"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        del_flag AS delFlag,
+        remarks,
+        create_by AS createBy,
+        create_date AS createDate,
+        update_by AS updateBy,
+        update_date AS updateDate,
+    </sql>
+
+    <!--登录-->
+    <select id="login" resultMap="BaseResultMap" parameterType="string">
+        SELECT u.*  FROM `user` u
+        WHERE u.del_flag= '0'
+        AND  u.login_name = #{loginName}
+     </select>
+
+</mapper>

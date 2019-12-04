@@ -1,0 +1,38 @@
+version: '3.4'
+services:
+  demo-service:
+    image: www.mengshuai85.cn:5000/backup-service:dev
+    volumes:
+    - /mnt/log:/log
+    environment:
+    # Skywalking 配置服务名称:SW_AGENT_NAME  Skywalking 配置收集器ip:SW_AGENT_COLLECTOR_BACKEND_SERVICES
+    - JAVA_OPTIONS=-Xmx100m -Dspring.cloud.inetutils.ignored-interfaces=eth[1-9] -Dspring.cloud.nacos.config.prefix=application -Dspring.cloud.nacos.config.file-extension=properties -Dspring.cloud.nacos.config.server-addr=test.crrcdt.com:8848 -Dspring.cloud.nacos.config.encode=utf-8 -Dspring.cloud.nacos.config.group=DEFAULT_GROUP -Deureka.instance.prefer-ip-address=true -Deureka.instance.ip-address=47.96.135.144 -Deureka.instance.nonSecurePort=8107
+    - JAVA_ARGS=--spring.profiles.active=dev --spring.redis.pool.max-idle=100
+    # 注册到注册中心的IP，这里我们选择宿主机的IP
+    - DUBBO_IP_TO_REGISTRY=test.crrcdt.com
+    # 注册到注册中心的端口
+    - DUBBO_PORT_TO_REGISTRY=20887
+
+    ports:
+    - "8107:8107"
+    - "20887:20887"
+    # 默认docker日志，只保留30m，避免日志一直增长
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+      placement:
+        # 部署到saas节点
+        constraints:
+        - node.hostname != test
+networks:
+  default:
+    external:
+      name: crrc_swarm_net
+
+volumes:
+  log:

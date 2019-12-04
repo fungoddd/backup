@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="seleniumTest">
+    <test name="test.java.TestNG">
+        <packages>
+            <package name="com.crrcdt.backup"></package>
+        </packages>
+    </test>
+</suite>
