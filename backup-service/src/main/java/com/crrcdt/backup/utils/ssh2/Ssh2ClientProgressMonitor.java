@@ -1,4 +1,4 @@
-package com.crrcdt.backup.utils.sftp;
+package com.crrcdt.backup.utils.ssh2;
 
 import com.jcraft.jsch.SftpProgressMonitor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,10 +7,13 @@ import javax.swing.*;
 
 
 /**
+ * <p>SFTP断点续传</p>
+ *
  * @author LiuYuHang
+ * @date 2019-12-09 21:42:12
  */
 @Slf4j
-public class SftpClientProgressMonitor implements SftpProgressMonitor {
+public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
 
     private ProgressMonitor monitor;
 
@@ -40,7 +43,7 @@ public class SftpClientProgressMonitor implements SftpProgressMonitor {
             message = "SFTP 断点续传下载文件开始";
             log.info(message);
         }
-        monitor = new ProgressMonitor(null, message + ": " + remotePath,"", 0, (int) max);
+        monitor = new ProgressMonitor(null, message + ": " + remotePath, "", 0, (int) max);
         this.max = max;
         this.count = 0;
         this.percent = -1;

@@ -1,5 +1,6 @@
-package com.crrcdt.backup.utils.sftp;
+package com.crrcdt.backup.utils.ssh2;
 
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
@@ -15,22 +16,28 @@ import java.util.Vector;
 
 /**
  * <p>
- * SFTP客户端对象工厂
+ * SSH2客户端对象工厂
  * </p>
  *
  * @author LiuYuHang
  * @date 2019-12-08 16:44:20
  */
 @Slf4j
-public class SftpClientExecute {
+public class Ssh2ClientExecute {
 
     private ChannelSftp sftpChannel;
 
-    SftpClientExecute() {
+    private ChannelExec execChannel;
+
+    Ssh2ClientExecute() {
     }
 
     void sftpChannel(ChannelSftp sftpChannel) {
         this.sftpChannel = sftpChannel;
+    }
+
+    void execChannel(ChannelExec execChannel) {
+        this.execChannel = execChannel;
     }
 
     /**
@@ -73,16 +80,16 @@ public class SftpClientExecute {
             if (sftpChannel.isClosed()) {
                 throw new RuntimeException("SFTP downloadFiles 下载文件异常!SFTP未连接!");
             }
-            SftpATTRS sftpATTRS = sftpChannel.lstat(remotePath);
+            SftpATTRS sftpAttrs = sftpChannel.lstat(remotePath);
             Vector vector;
             // 判断要下载的目标是否为目录
-            if (sftpATTRS.isDir()) {
+            if (sftpAttrs.isDir()) {
                 // 如果是目录则创建本地存储目录
                 StringBuilder stringBuilder = new StringBuilder(localDir);
                 if (root == 0) {
                     stringBuilder.append(File.separator).append(new File(remotePath).getName()).append("-").append(DateFormatUtils.format(startTime, "yyyyMMdd"));
-                    root++;
                 }
+                root++;
                 File dir = new File(stringBuilder.toString());
                 if (!dir.exists()) {
                     log.info("SFTP downloadFiles 本地存储目录{}不存在,创建目录", localDir);
@@ -96,8 +103,13 @@ public class SftpClientExecute {
                 vector = sftpChannel.ls(remotePath);
             } else {
                 log.info("SFTP downloadFiles 开始下载文件{}", remotePath);
+                File dir = new File(localDir);
+                if (!dir.exists() && root == 0) {
+                    dir.mkdirs();
+                    localDir = dir.getPath();
+                }
                 // 断点续传下载
-                sftpChannel.get(remotePath, localDir, new SftpClientProgressMonitor(), ChannelSftp.RESUME);
+                sftpChannel.get(remotePath, localDir, new Ssh2ClientProgressMonitor(), ChannelSftp.RESUME);
                 long endTime1 = System.currentTimeMillis();
                 log.info("SFTP downloadFiles 下载文件完成,用时{}秒", (double) (endTime1 - startTime) / 1000);
                 return;
@@ -208,13 +220,19 @@ public class SftpClientExecute {
             if (sftpChannel != null && sftpChannel.getSession().isConnected()) {
                 sftpChannel.getSession().disconnect();
             }
+            if (execChannel != null && execChannel.getSession().isConnected()) {
+                execChannel.getSession().disconnect();
+            }
         } catch (JSchException e) {
-            log.error("SFTP disconnect 关闭Session连接异常! ", e);
+            log.error("SSH2 disconnect 关闭Session会话异常! ", e);
             throw e;
         } finally {
             if (sftpChannel != null) {
                 sftpChannel.quit();
                 sftpChannel.disconnect();
+            }
+            if (execChannel != null) {
+                execChannel.disconnect();
             }
         }
     }

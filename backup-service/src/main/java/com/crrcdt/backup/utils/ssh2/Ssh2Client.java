@@ -1,5 +1,6 @@
-package com.crrcdt.backup.utils.sftp;
+package com.crrcdt.backup.utils.ssh2;
 
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import lombok.extern.slf4j.Slf4j;
 
@@ -7,23 +8,28 @@ import java.util.List;
 
 /**
  * <p>
- * SFTP客户端
+ * SSH2客户端
  * </p>
  *
  * @author LiuYuHang
  * @date 2019-12-08 16:45:23
  */
 @Slf4j
-public class SftpClient {
+public class Ssh2Client {
 
-    private SftpClientExecute sftpExecute;
+    private Ssh2ClientExecute ssh2ClientExecute;
 
-    SftpClient() {
-        this.sftpExecute = new SftpClientExecute();
+    Ssh2Client() {
+        this.ssh2ClientExecute = new Ssh2ClientExecute();
     }
 
-    SftpClient sftpChannel(ChannelSftp sftpChannel) {
-        this.sftpExecute.sftpChannel(sftpChannel);
+    Ssh2Client sftpChannel(ChannelSftp sftpChannel) {
+        this.ssh2ClientExecute.sftpChannel(sftpChannel);
+        return this;
+    }
+
+    Ssh2Client execChannel(ChannelExec channelExec) {
+        this.ssh2ClientExecute.execChannel(channelExec);
         return this;
     }
 
@@ -34,7 +40,7 @@ public class SftpClient {
      * @param uploadFileName 要上传的文件名称
      */
     public boolean uploadFile(String uploadDir, String uploadFileName) throws Exception {
-        return sftpExecute.uploadFile(uploadDir, uploadFileName);
+        return ssh2ClientExecute.uploadFile(uploadDir, uploadFileName);
     }
 
     /**
@@ -45,7 +51,7 @@ public class SftpClient {
      * @throws Exception 异常对象
      */
     public void download(String remotePath, String localDir) throws Exception {
-        sftpExecute.download(remotePath, localDir);
+        ssh2ClientExecute.download(remotePath, localDir);
     }
 
     /**
@@ -55,7 +61,7 @@ public class SftpClient {
      * @throws Exception 异常对象
      */
     public void delete(String path) throws Exception {
-        sftpExecute.delete(path);
+        ssh2ClientExecute.delete(path);
     }
 
     /**
@@ -66,14 +72,14 @@ public class SftpClient {
      * @throws Exception 异常对象
      */
     public List<String> listFiles(String directory) throws Exception {
-        return sftpExecute.listFiles(directory);
+        return ssh2ClientExecute.listFiles(directory);
     }
 
     /**
      * <p>关闭SFTP连接</p>
      */
     public void disconnect() throws Exception {
-        this.sftpExecute.disconnect();
+        this.ssh2ClientExecute.disconnect();
     }
 
 }

@@ -6,15 +6,14 @@ import com.crrcdt.backup.common.base.BaseServiceImpl;
 import com.crrcdt.backup.mapper.BackupMapper;
 import com.crrcdt.backup.model.Backup;
 import com.crrcdt.backup.model.Server;
-import com.crrcdt.backup.utils.sftp.SftpClient;
+import com.crrcdt.backup.utils.ssh2.Ssh2Client;
 import com.crrcdt.backup.utils.WebUtil;
-import com.crrcdt.backup.utils.sftp.SftpClientFactory;
+import com.crrcdt.backup.utils.ssh2.Ssh2ClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.Map;
 
 /**
@@ -46,7 +45,7 @@ public class BackupServiceImpl extends BaseServiceImpl<BackupMapper, Backup, Map
         int port = server.getPort();
         String user = server.getUser();
         String password = server.getPassword();
-        SftpClient sftpClient = SftpClientFactory.createConn(host, port, user, password);
-        sftpClient.download(backup.getSourceDir(), backup.getTargetDir());
+        Ssh2Client ssh2Client = Ssh2ClientFactory.openSftpChannel(host, port, user, password);
+        ssh2Client.download(backup.getSourceDir(), backup.getTargetDir());
     }
 }
