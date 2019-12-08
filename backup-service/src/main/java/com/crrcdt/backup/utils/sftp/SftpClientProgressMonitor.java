@@ -12,7 +12,7 @@ import javax.swing.*;
 @Slf4j
 public class SftpClientProgressMonitor implements SftpProgressMonitor {
 
-    ProgressMonitor monitor;
+    private ProgressMonitor monitor;
 
     /**
      * 当前接收的总字节数
@@ -32,6 +32,7 @@ public class SftpClientProgressMonitor implements SftpProgressMonitor {
     @Override
     public void init(int op, String remotePath, String localDir, long max) {
         String message;
+        String note;
         if (op == SftpProgressMonitor.PUT) {
             message = "SFTP 断点续传上传文件开始";
             log.info(message);
@@ -39,7 +40,7 @@ public class SftpClientProgressMonitor implements SftpProgressMonitor {
             message = "SFTP 断点续传下载文件开始";
             log.info(message);
         }
-        monitor = new ProgressMonitor(null, message + ": " + remotePath, "", 0, (int) max);
+        monitor = new ProgressMonitor(null, message + ": " + remotePath,"", 0, (int) max);
         this.max = max;
         this.count = 0;
         this.percent = -1;
@@ -75,6 +76,7 @@ public class SftpClientProgressMonitor implements SftpProgressMonitor {
 
     @Override
     public void end() {
+        monitor.close();
         log.info("SFTP 文件传输结束.");
     }
 }
