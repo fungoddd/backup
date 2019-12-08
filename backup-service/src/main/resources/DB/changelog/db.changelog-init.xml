@@ -5,12 +5,12 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.7.xsd">
     <!--用户信息表-->
     <changeSet author="initial" id="20191031-1">
-        <createTable tableName="user">
+        <createTable tableName="user_info">
             <column name="id" remarks="主键" type="VARCHAR(64)" value="initial">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="username" remarks="用户名" type="VARCHAR(64)" value="admin"/>
-            <column name="password" remarks="密码" type="VARCHAR(64)" value="admin"/>
+            <column name="username" remarks="用户名" type="VARCHAR(64)"/>
+            <column name="password" remarks="密码" type="VARCHAR(64)"/>
             <column name="login_flag" remarks="是否可登录(0:不可登录;1:可登陆)" type="CHAR(1)"/>
             <column name="login_ip" remarks="最后登陆IP" type="VARCHAR(64)"/>
             <column name="login_date" remarks="最后登陆时间" type="TIMESTAMP"/>
@@ -36,6 +36,7 @@
             <column name="backup_state" defaultValue="" remarks="备份结果标记(0:备份失败;1:备份成功)" type="CHAR(1)"/>
             <column name="backup_start_time" remarks="备份开始时间" type="TIMESTAMP"/>
             <column name="backup_end_time" remarks="备份结束时间" type="TIMESTAMP"/>
+            <column name="user_id" remarks="用户id" type="VARCHAR(64)"/>
             <column name="server_id" remarks="文件服务器id" type="VARCHAR(64)"/>
             <column name="name" remarks="任务名称" type="VARCHAR(64)"/>
             <column defaultValue="0" name="del_flag" remarks="删除标记(0:正常;1:删除)" type="CHAR(1)"/>
@@ -55,7 +56,7 @@
             <column name="user" remarks="服务器登录用户" type="VARCHAR(64)"/>
             <column name="password" remarks="服务器用户密码" type="VARCHAR(64)"/>
             <column name="host" remarks="服务器ip地址" type="VARCHAR(64)"/>
-            <column name="port" defaultValue="22" remarks="服务器连接端口" type="VARCHAR(10)"/>
+            <column name="port" defaultValue="22" remarks="服务器连接端口" type="INT"/>
             <column name="user_id" remarks="用户id" type="VARCHAR(64)"/>
             <column name="name" remarks="名称" type="VARCHAR(64)"/>
             <column defaultValue="0" name="del_flag" remarks="删除标记(0: 正常;1: 删除)" type="CHAR(1)"/>

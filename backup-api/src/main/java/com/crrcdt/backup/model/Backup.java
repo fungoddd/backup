@@ -1,9 +1,11 @@
 package com.crrcdt.backup.model;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.crrcdt.backup.common.base.BaseModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
@@ -16,6 +18,8 @@ import java.util.Date;
  * @date 2019年10月30日15:42:41
  */
 @Data
+@TableName(value = "backup")
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "文件备份计划实体类")
 public class Backup extends BaseModel {
 
@@ -23,6 +27,7 @@ public class Backup extends BaseModel {
      * 备份目录或文件的来源路径
      */
 
+    @ApiModelProperty("备份目录或文件的源路径")
     private String sourceDir;
 
     /**
@@ -60,6 +65,12 @@ public class Backup extends BaseModel {
      */
     @ApiModelProperty("备份结束时间")
     private Date backupEndTime;
+
+    /**
+     * 用户id
+     */
+    @ApiModelProperty("用户id")
+    private String userId;
 
     /**
      * 文件服务器id

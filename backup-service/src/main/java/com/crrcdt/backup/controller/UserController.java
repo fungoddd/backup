@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- *     用户管理Controller
+ * 用户管理Controller
  * </p>
+ *
  * @author lyh
  * @date 2019年11月1日09:13:29
  */
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/v1/backup/user")
 @Api(value = "用户管理", description = "用户管理")
 public class UserController extends BaseController {
 

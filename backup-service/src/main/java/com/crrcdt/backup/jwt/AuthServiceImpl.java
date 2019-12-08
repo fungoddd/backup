@@ -3,23 +3,28 @@ package com.crrcdt.backup.jwt;
 import com.crrcdt.backup.api.UserService;
 import com.crrcdt.backup.common.constant.BackupConstant;
 import com.crrcdt.backup.common.utils.EncryUtil;
+import com.crrcdt.backup.common.utils.RequestUtil;
 import com.crrcdt.backup.utils.HttpSessionIdHolder;
-import com.crrcdt.backup.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.crrcdt.backup.model.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * <p>Token登录实现类</p>
  * @author lyh
  * @date 2019年11月6日11:02:46
  */
+@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
     private UserService userService;
@@ -33,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtAuthenticationResponse login(String username, String password) {
         String token;
-        User user = userService.login(username);
+        UserInfo user = userService.login(username);
         if (user == null) {
             return new JwtAuthenticationResponse(false, "帐号不存在!");
         }
@@ -49,6 +54,15 @@ public class AuthServiceImpl implements AuthService {
             token = JwtTokenUtil.generateToken(user);
             //设置sessionId
             HttpSessionIdHolder.setSessionId(JwtTokenUtil.getSessionIdFromToken(token));
+            // 获取request
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+            HttpServletRequest request = Objects.requireNonNull(servletRequestAttributes).getRequest();
+            //获取当前账号登录的ip地址
+            String loginIp = RequestUtil.getIpAddr(request);
+            user.setLoginDate(new Date());
+            user.setLoginIp(loginIp);
+            userService.updateSelective(user);
             return new JwtAuthenticationResponse(token);
         } else {
             return new JwtAuthenticationResponse(false, "密码错误!");
@@ -64,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String refresh(String token) {
         String userId = JwtTokenUtil.getUserIdFromToken(token);
-        User user = userService.getByPK(userId);
+        UserInfo user = (UserInfo) userService.getById(userId).getData();
         if (JwtTokenUtil.canTokenBeRefreshed(token, user.getUpdateDate())) {
             return JwtTokenUtil.refreshToken(token);
         }
@@ -81,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Boolean validate(String token, String resource) {
         String userId = JwtTokenUtil.getUserIdFromToken(token);
-        User info = userService.getByPK(userId);
+        UserInfo info = (UserInfo) userService.getById(userId).getData();
         return info.getId().equals(userId);
     }
 

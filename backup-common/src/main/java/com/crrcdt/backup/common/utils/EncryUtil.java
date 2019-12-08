@@ -40,7 +40,7 @@ public class EncryUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        String encrypt = entryptPassword("123456");
+        String encrypt = entryptPassword("admin");
         System.out.println("密文：" + encrypt);
     }
 

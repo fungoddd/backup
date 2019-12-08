@@ -36,7 +36,6 @@ public class BaseController {
         if (null != request.getHeader(header) && xmlHttpRequest.equalsIgnoreCase(request.getHeader(header))) {
             request.setAttribute("requestHeader", "ajax");
         }
-
         if (exception instanceof HttpMessageNotReadableException) {
             return BaseResult.validatorResultCreate("哇哦,向后台传递的数据格式不正确,请前台开发人员确认……");
         }

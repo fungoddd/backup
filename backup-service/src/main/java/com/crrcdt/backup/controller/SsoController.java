@@ -7,11 +7,10 @@ import com.crrcdt.backup.common.validator.StringBlankValidator;
 import com.crrcdt.backup.common.validator.Valid;
 import com.crrcdt.backup.jwt.AuthService;
 import com.crrcdt.backup.jwt.JwtAuthenticationResponse;
-import com.crrcdt.backup.model.User;
+import com.crrcdt.backup.model.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +22,11 @@ import org.springframework.web.bind.annotation.*;
  * @author lyh
  * @date 2019年11月1日09:15:30
  */
+@Slf4j
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/v1/backup/sso")
 @Api(value = "登录管理", description = "登录管理")
 public class SsoController extends BaseController {
-
-    private final static Logger logger = LoggerFactory.getLogger(SsoController.class);
 
     @Autowired
     private UserService userService;
@@ -43,7 +41,7 @@ public class SsoController extends BaseController {
     @ApiOperation(value = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public Object login(@RequestBody User user) {
+    public Object login(@RequestBody UserInfo user) {
         Valid valid = new Valid().on(user.getUsername(), new StringBlankValidator("帐号")).on(user.getPassword(), new StringBlankValidator("密码"));
         if (valid.isError()) {
             return valid.errorInfo();

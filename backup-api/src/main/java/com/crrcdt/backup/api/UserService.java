@@ -1,7 +1,7 @@
 package com.crrcdt.backup.api;
 
 import com.crrcdt.backup.common.base.BaseService;
-import com.crrcdt.backup.model.User;
+import com.crrcdt.backup.model.UserInfo;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author lyh
  * @date 2019年11月1日09:32:33
  */
-public interface UserService extends BaseService<User, Map<String, Object>> {
+public interface UserService extends BaseService<UserInfo, Map<String, Object>> {
 
     /**
      * <p>登录</p>
@@ -21,6 +21,6 @@ public interface UserService extends BaseService<User, Map<String, Object>> {
      * @param username 用户登录名
      * @return User
      */
-    User login(String username);
+    UserInfo login(String username);
 
 }

@@ -3,6 +3,19 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.7.xsd">
-    <!--用户信息表-->
 
+    <changeSet author="initial" id="20191206-1">
+        <insert tableName="user_info">
+            <column name="id" value="superAdminId"/>
+            <column name="username" value="admin"/>
+            <column name="password" value="1aa3b01d7d121e86a7c0cb598779292de3982397c7cfebab6bd46bb9"/>
+            <column name="login_flag" value="1"/>
+            <column name="login_ip" value="127.0.0.1"/>
+            <column name="name" value="超级管理员"/>
+            <column name="del_flag" value="0"/>
+            <column name="create_by" value="admin"/>
+            <column name="update_by"  value="admin"/>
+            <column name="remarks" value="初始用户超级管理员"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

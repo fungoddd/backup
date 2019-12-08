@@ -3,7 +3,7 @@ package com.crrcdt.backup.jwt;
 /**
  * <p>Token登录接口</p>
  *
- * @author lyh
+ * @author LiuYuHang
  * @date 2019年11月6日11:54:17
  */
 public interface AuthService {

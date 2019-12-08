@@ -8,7 +8,7 @@ import com.crrcdt.backup.model.Backup;
  * 文件服务Mapper接口
  * </p>
  *
- * @author lyh
+ * @author LiuYuHang
  * @date 2019年10月30日15:41:22
  */
 public interface BackupMapper extends BaseMapper<Backup> {

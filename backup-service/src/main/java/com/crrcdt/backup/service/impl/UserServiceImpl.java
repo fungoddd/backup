@@ -3,10 +3,9 @@ package com.crrcdt.backup.service.impl;
 import com.crrcdt.backup.api.UserService;
 import com.crrcdt.backup.common.base.BaseServiceImpl;
 import com.crrcdt.backup.mapper.UserMapper;
-import com.crrcdt.backup.model.User;
+import com.crrcdt.backup.model.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,10 +18,9 @@ import java.util.Map;
  * @author lyh
  * @date 2019年11月6日12:58:55
  */
+@Slf4j
 @Service
-public class UserServiceImpl extends BaseServiceImpl<UserMapper, User, Map<String, Object>> implements UserService {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserInfo, Map<String, Object>> implements UserService {
 
     /**
      * <p>登录</p>
@@ -31,7 +29,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User, Map<Strin
      * @return User
      */
     @Override
-    public User login(String username) {
+    public UserInfo login(String username) {
         if (StringUtils.isNotBlank(username)) {
             return baseMapper.login(username);
         }

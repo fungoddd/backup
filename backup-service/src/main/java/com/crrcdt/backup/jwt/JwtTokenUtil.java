@@ -1,7 +1,7 @@
 package com.crrcdt.backup.jwt;
 
 import com.crrcdt.backup.common.utils.PropertiesFileUtil;
-import com.crrcdt.backup.model.User;
+import com.crrcdt.backup.model.UserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -145,7 +145,7 @@ public class JwtTokenUtil implements Serializable {
      * @param info
      * @return
      */
-    public static String generateToken(User info) {
+    public static String generateToken(UserInfo info) {
         Map<String, Object> claims = new HashMap<>(2);
         claims.put(CLAIM_KEY_USER_ID, info.getId());
         claims.put(CLAIM_KEY_CREATED, new Date());
