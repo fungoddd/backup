@@ -80,12 +80,12 @@ public class SftpClientExecute {
             // 判断要下载的目标是否为目录
             if (sftpATTRS.isDir()) {
                 // 如果是目录则创建本地存储目录
-                String dirName = localDir;
+                StringBuilder stringBuilder = new StringBuilder(localDir + File.separator);
                 if (root == 0) {
-                    dirName = localDir + File.separator+ new File(remotePath).getName() + DateFormatUtils.format(startTime, "yyyy-MM-dd");
+                    stringBuilder.append(new File(remotePath).getName()).append("-").append(DateFormatUtils.format(startTime, "yyyyMMdd"));
                     root++;
                 }
-                File dir = new File(dirName);
+                File dir = new File(stringBuilder.toString());
                 if (!dir.exists()) {
                     log.info("SFTP downloadFiles 本地存储目录{}不存在,创建目录", localDir);
                     dir.mkdirs();
@@ -98,7 +98,8 @@ public class SftpClientExecute {
                 vector = sftpChannel.ls(remotePath);
             } else {
                 log.info("SFTP downloadFiles 开始下载文件{}", remotePath);
-                sftpChannel.get(remotePath, localDir);
+                // 断点续传下载
+                sftpChannel.get(remotePath, localDir, new ProgressMonitor(), ChannelSftp.RESUME);
                 long endTime1 = System.currentTimeMillis();
                 log.info("SFTP downloadFiles 下载文件完成,用时{}秒", (double) (endTime1 - startTime) / 1000);
                 return;
