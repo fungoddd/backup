@@ -3,11 +3,16 @@ package com.crrcdt.backup.utils.sftp;
 import com.jcraft.jsch.SftpProgressMonitor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
+
+
 /**
  * @author LiuYuHang
  */
 @Slf4j
-public class ProgressMonitor implements SftpProgressMonitor {
+public class SftpClientProgressMonitor implements SftpProgressMonitor {
+
+    ProgressMonitor monitor;
 
     /**
      * 当前接收的总字节数
@@ -25,12 +30,16 @@ public class ProgressMonitor implements SftpProgressMonitor {
     private long percent = -1;
 
     @Override
-    public void init(int op, String src, String dest, long max) {
+    public void init(int op, String remotePath, String localDir, long max) {
+        String message;
         if (op == SftpProgressMonitor.PUT) {
-            log.info("SFTP 断点续传上传文件开始.");
+            message = "SFTP 断点续传上传文件开始";
+            log.info(message);
         } else {
-            log.info("SFTP 断点续传下载文件开始.");
+            message = "SFTP 断点续传下载文件开始";
+            log.info(message);
         }
+        monitor = new ProgressMonitor(null, message + ": " + remotePath, "", 0, (int) max);
         this.max = max;
         this.count = 0;
         this.percent = -1;
@@ -58,7 +67,10 @@ public class ProgressMonitor implements SftpProgressMonitor {
             maxStr = String.format("%.1f", maxSize) + "m";
         }
         log.info("SFTP 文件已传输 {} ({}%） 文件总大小 {} ", rateStr, percent, maxStr);
-        return true;
+        monitor.setNote("SFTP 文件已传输 " + rateStr + " (" + percent + "%） 文件总大小 " + maxStr);
+        monitor.setProgress((int) this.count);
+        return !(monitor.isCanceled());
+
     }
 
     @Override
