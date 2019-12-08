@@ -55,6 +55,17 @@ public class Ssh2Client {
     }
 
     /**
+     * <p>输出文件或文件夹</p>
+     *
+     * @param remotePath 要下载的文件路径或文件夹路径
+     * @param localDir   本地存储目录所在路径
+     * @throws Exception 异常对象
+     */
+    public void output(String remotePath, String localDir) throws Exception {
+        ssh2ClientExecute.download(remotePath, localDir);
+    }
+
+    /**
      * <p>删除文件或文件夹(包括文件夹下所有文件)</p>
      *
      * @param path 要删除的文件路径或文件夹路径

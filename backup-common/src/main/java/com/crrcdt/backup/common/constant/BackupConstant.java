@@ -5,7 +5,7 @@ package com.crrcdt.backup.common.constant;
  * backup常量
  * </p>
  *
- * @author lyh
+ * @author LiuYuHang
  * @date 2019年10月30日15:52:44
  */
 public class BackupConstant extends BaseConstants{
@@ -19,6 +19,8 @@ public class BackupConstant extends BaseConstants{
     public static final String ZERO = "0";
 
     public static final String ADMIN = "admin";
+
+    public static final String SUPPER_ADMIN_ID = "supperAdminId";
 
     public static final String REFERRER = "Referer";
 

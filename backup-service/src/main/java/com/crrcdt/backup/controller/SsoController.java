@@ -7,12 +7,16 @@ import com.crrcdt.backup.common.validator.StringBlankValidator;
 import com.crrcdt.backup.common.validator.Valid;
 import com.crrcdt.backup.jwt.AuthService;
 import com.crrcdt.backup.jwt.JwtAuthenticationResponse;
+import com.crrcdt.backup.jwt.JwtTokenUtil;
 import com.crrcdt.backup.model.UserInfo;
+import com.crrcdt.backup.utils.RequestParameterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -34,7 +38,8 @@ public class SsoController extends BaseController {
     private AuthService authService;
 
     /**
-     *<p>登录</p>
+     * <p>登录</p>
+     *
      * @param user 用户信息
      * @return Object
      */
@@ -51,6 +56,19 @@ public class SsoController extends BaseController {
                 ? new BaseResult(BaseResult.SUCCESS, "登录成功！", response.getToken())
                 : new BaseResult(BaseResult.FAILED, "登录失败 " + response.getMessage(),
                 response.getMessage());
+    }
+
+    /**
+     * <p>退出登录</p>
+     *
+     * @return Object
+     */
+    @ApiOperation(value = "退出登录")
+    @GetMapping(value = "/logout")
+    public Object logout(HttpServletRequest request) {
+        String authToken = RequestParameterUtil.getToken(request);
+        String userId = JwtTokenUtil.getUserIdFromToken(authToken);
+        return BaseResult.successResultCreate("退出登录!");
     }
 
 }

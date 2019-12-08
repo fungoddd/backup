@@ -71,10 +71,21 @@ public class Ssh2ClientExecute {
      * @throws Exception 异常对象
      */
     void download(String remotePath, String localDir) throws Exception {
-        download(remotePath, localDir, 0);
+        download(remotePath, localDir, 0, false);
     }
 
-    private void download(String remotePath, String localDir, int root) throws Exception {
+    /**
+     * <p>输出文件或文件夹</p>
+     *
+     * @param remotePath 要下载的文件路径或文件夹路径
+     * @param localDir   本地存储目录所在路径
+     * @throws Exception 异常对象
+     */
+    void output(String remotePath, String localDir) throws Exception {
+        download(remotePath, localDir, 0, true);
+    }
+
+    private void download(String remotePath, String localDir, int root, boolean isOutput) throws Exception {
         long startTime = System.currentTimeMillis();
         try {
             if (sftpChannel.isClosed()) {
@@ -123,7 +134,7 @@ public class Ssh2ClientExecute {
                         }
                         String remoteFileName = remotePath + File.separator + fileName;
                         String localFileName = localDir + File.separator + fileName;
-                        download(remoteFileName, localFileName, root);
+                        download(remoteFileName, localFileName, root, isOutput);
                     }
                 }
             }

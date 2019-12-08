@@ -4,26 +4,27 @@ import com.baidu.unbiz.fluentvalidator.ValidationError;
 import com.baidu.unbiz.fluentvalidator.Validator;
 import com.baidu.unbiz.fluentvalidator.ValidatorContext;
 import com.baidu.unbiz.fluentvalidator.ValidatorHandler;
-import org.apache.commons.lang3.StringUtils;
 
 /**
- * <p>校验字符串是否为空</p>
+ * <p>
+ * 校验是否为null
+ * </p>
  *
  * @author LiuYuHang
- * @date 2019年11月1日11:12:18
+ * @date 2019年11月1日11:13:20
  */
-public class StringBlankValidator extends ValidatorHandler<String> implements Validator<String> {
+public class NotNullValidator extends ValidatorHandler<Object> implements Validator<Object> {
 
     private String fieldName;
 
-    public StringBlankValidator(String fieldName) {
+    public NotNullValidator(String fieldName) {
         this.fieldName = fieldName;
     }
 
     @Override
-    public boolean validate(ValidatorContext context, String s) {
-        if (StringUtils.isBlank(s)) {
-            context.addError(ValidationError.create(String.format("%s不能为空！", fieldName))
+    public boolean validate(ValidatorContext context, Object s) {
+        if (null == s) {
+            context.addError(ValidationError.create(String.format("%s不能为空!", fieldName))
                     .setErrorCode(-1)
                     .setField(fieldName)
                     .setInvalidValue(s));

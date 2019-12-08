@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 用于简化Fluent-validator封装
  *
- * @author lyh
+ * @author LiuYuHang
  * @date 2019年11月1日11:10:14
  */
 public class Valid {

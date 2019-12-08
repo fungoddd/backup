@@ -18,21 +18,21 @@ import java.util.Map;
 public interface BackupService extends BaseService<Backup, Map<String, Object>> {
 
     /**
-     * <p>新增一条文件备份信息记录</p>
-     *
-     * @param backup 文件备份对象
-     * @return 操作结果
-     */
-    BaseResult addBackup(Backup backup);
-
-    /**
      * <p>通过SFTP下载文件</p>
      *
      * @param backup 文件备份信息
      * @param server 服务器信息
-     * @return 备份文件信息
-     * @throws Exception 异常
+     * @throws Exception 异常对象
      */
     void downLoadFile(Backup backup, Server server) throws Exception;
+
+    /**
+     * <p>通过SFTP输出文件</p>
+     *
+     * @param backup 文件备份信息
+     * @param server 服务器信息
+     * @throws Exception 异常对象
+     */
+    void outputFile(Backup backup, Server server) throws Exception;
 
 }

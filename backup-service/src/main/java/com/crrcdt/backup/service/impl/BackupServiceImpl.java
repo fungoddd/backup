@@ -28,17 +28,6 @@ import java.util.Map;
 @Service
 public class BackupServiceImpl extends BaseServiceImpl<BackupMapper, Backup, Map<String, Object>> implements BackupService {
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public BaseResult addBackup(Backup backup) {
-        String userId = WebUtil.getCurrentUserId();
-        if (StringUtils.isBlank(userId)) {
-            return BaseResult.failResultCreate("添加备份信息失败!请先登录!");
-        }
-        backup.setUserId(userId);
-        return super.add(backup);
-    }
-
     @Override
     public void downLoadFile(Backup backup, Server server) throws Exception {
         String host = server.getHost();
@@ -47,5 +36,15 @@ public class BackupServiceImpl extends BaseServiceImpl<BackupMapper, Backup, Map
         String password = server.getPassword();
         Ssh2Client ssh2Client = Ssh2ClientFactory.openSftpChannel(host, port, user, password);
         ssh2Client.download(backup.getSourceDir(), backup.getTargetDir());
+    }
+
+    @Override
+    public void outputFile(Backup backup, Server server) throws Exception {
+        String host = server.getHost();
+        int port = server.getPort();
+        String user = server.getUser();
+        String password = server.getPassword();
+        Ssh2Client ssh2Client = Ssh2ClientFactory.openSftpChannel(host, port, user, password);
+        ssh2Client.output(backup.getSourceDir(), backup.getTargetDir());
     }
 }
