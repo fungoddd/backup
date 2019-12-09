@@ -95,13 +95,15 @@ public class Ssh2ClientExecute {
             Vector vector;
             // 判断要下载的目标是否为目录
             if (sftpAttrs.isDir()) {
-                // 如果是目录则创建本地存储目录
+                // 如果是目录则以目标目录名+时间创建本地存储目录
                 StringBuilder stringBuilder = new StringBuilder(localDir);
+                // root==0代表只有下载的(第一次创建)目标目录需要+时间命名,其子目录不需要
                 if (root == 0) {
                     stringBuilder.append(File.separator).append(new File(remotePath).getName()).append("-").append(DateFormatUtils.format(startTime, "yyyyMMdd"));
                 }
                 root++;
                 File dir = new File(stringBuilder.toString());
+                // 创建目录
                 if (!dir.exists()) {
                     log.info("SFTP downloadFiles 本地存储目录{}不存在,创建目录", localDir);
                     dir.mkdirs();
@@ -113,16 +115,28 @@ public class Ssh2ClientExecute {
                 //列出目标目录下所有文件
                 vector = sftpChannel.ls(remotePath);
             } else {
-                log.info("SFTP downloadFiles 开始下载文件{}", remotePath);
                 File dir = new File(localDir);
-                if (!dir.exists() && root == 0) {
+                boolean dirIsExists = dir.exists();
+                // 如果目标是文件则直接判断本地存储目录是否存在并创建,root==0时代表第一次递归创建本地存储目录,后续下载为文件无需创建
+                if (!dirIsExists && root == 0) {
                     dir.mkdirs();
                     localDir = dir.getPath();
                 }
-                // 断点续传下载
-                sftpChannel.get(remotePath, localDir, new Ssh2ClientProgressMonitor(), ChannelSftp.RESUME);
-                long endTime1 = System.currentTimeMillis();
-                log.info("SFTP downloadFiles 下载文件完成,用时{}秒", (double) (endTime1 - startTime) / 1000);
+                log.info("SFTP downloadFiles 开始下载文件{}", remotePath);
+                //如果是空文件则在本地直接创建文件
+                if (sftpAttrs.getSize() == 0) {
+                    dir = new File(localDir + File.separator + new File(remotePath).getName());
+                    if (dirIsExists) {
+                        dir.deleteOnExit();
+                    }
+                    dir.createNewFile();
+                    log.info("SFTP downloadFiles 目标文件为空,直接创建文件: {}", dir.getName());
+                } else {
+                    // 断点续传下载
+                    sftpChannel.get(remotePath, localDir, new Ssh2ClientProgressMonitor(), ChannelSftp.RESUME);
+                    long endTime1 = System.currentTimeMillis();
+                    log.info("SFTP downloadFiles 下载文件完成,用时{}秒", (double) (endTime1 - startTime) / 1000);
+                }
                 return;
             }
             if (CollectionUtils.isNotEmpty(vector)) {

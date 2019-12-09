@@ -35,7 +35,6 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
     @Override
     public void init(int op, String remotePath, String localDir, long max) {
         String message;
-        String note;
         if (op == SftpProgressMonitor.PUT) {
             message = "SFTP 断点续传上传文件开始";
             log.info(message);
@@ -52,6 +51,7 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
     @Override
     public boolean count(long count) {
         this.count += count;
+
         if (percent >= this.count * 100 / max) {
             return true;
         }
