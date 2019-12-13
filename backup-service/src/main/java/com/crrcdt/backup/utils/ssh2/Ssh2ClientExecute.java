@@ -7,9 +7,9 @@ import com.jcraft.jsch.SftpATTRS;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -95,14 +95,8 @@ public class Ssh2ClientExecute {
             Vector vector;
             // 判断要下载的目标是否为目录
             if (sftpAttrs.isDir()) {
-                // 如果是目录则以目标目录名+时间创建本地存储目录
-                StringBuilder stringBuilder = new StringBuilder(localDir);
-                // root==0代表只有下载的(第一次创建)目标目录需要+时间命名,其子目录不需要
-                if (root == 0) {
-                    stringBuilder.append(File.separator).append(new File(remotePath).getName()).append("-").append(DateFormatUtils.format(startTime, "yyyyMMdd"));
-                }
                 root++;
-                File dir = new File(stringBuilder.toString());
+                File dir = new File(localDir + File.separator + new File(remotePath).getName());
                 // 创建目录
                 if (!dir.exists()) {
                     log.info("SFTP downloadFiles 本地存储目录{}不存在,创建目录", localDir);

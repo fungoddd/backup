@@ -51,34 +51,33 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
     @Override
     public boolean count(long count) {
         this.count += count;
-
         if (percent >= this.count * 100 / max) {
             return true;
         }
         percent = this.count * 100 / max;
-
-        int kb = 1024;
-        double rate = (double) (this.count / kb);
-        double maxSize = (double) (max) / kb;
-        String rateStr;
-        String maxStr;
-        if (rate > kb) {
-            rate = rate / kb;
-            rateStr = String.format("%.1f", rate) + "m";
-        } else {
-            rateStr = String.format("%.0f", rate) + "kb";
-        }
-        if (maxSize > kb) {
-            maxSize = maxSize / kb;
-            maxStr = String.format("%.1f", maxSize) + "m";
-        } else {
-            maxStr = String.format("%.0f", maxSize) + "kb";
-        }
-        log.info("SFTP 文件已传输 {} ({}%） 文件总大小 {} ", rateStr, percent, maxStr);
-        monitor.setNote("SFTP 文件已传输 " + rateStr + " (" + percent + "%） 文件总大小 " + maxStr);
+        String rateSize = handleFileSize(this.count);
+        String maxSize = handleFileSize(max);
+        log.info("SFTP 文件已传输 {} ({}%） 文件总大小 {} ", rateSize, percent, maxSize);
+        monitor.setNote("SFTP 文件已传输 " + rateSize + " (" + percent + "%） 文件总大小 " + maxSize);
         monitor.setProgress((int) this.count);
         return !(monitor.isCanceled());
+    }
 
+    private String handleFileSize(long fileSize) {
+        double kbSize = (double) fileSize / 1024;
+        int m = 1024;
+        int gb = 1024 * m;
+        String fileSizeStr;
+        if (kbSize > gb) {
+            kbSize = kbSize / gb;
+            fileSizeStr = String.format("%.1f", kbSize) + "GB";
+        } else if (kbSize > m) {
+            kbSize = kbSize / m;
+            fileSizeStr = String.format("%.1f", kbSize) + "M";
+        } else {
+            fileSizeStr = String.format("%.0f", kbSize) + "KB";
+        }
+        return fileSizeStr;
     }
 
     @Override
@@ -86,4 +85,5 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
         monitor.close();
         log.info("SFTP 文件传输结束.");
     }
+
 }
