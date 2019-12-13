@@ -68,7 +68,7 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
         } else {
             rateStr = String.format("%.0f", rate) + "kb";
         }
-        if (max > kb) {
+        if (maxSize > kb) {
             maxSize = maxSize / kb;
             maxStr = String.format("%.1f", maxSize) + "m";
         } else {
