@@ -60,15 +60,19 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
         int kb = 1024;
         double rate = (double) (this.count / kb);
         double maxSize = (double) (max) / kb;
-        String rateStr = String.format("%.0f", rate) + "kb";
-        String maxStr = String.format("%.0f", maxSize) + "kb";
+        String rateStr;
+        String maxStr;
         if (rate > kb) {
             rate = rate / kb;
             rateStr = String.format("%.1f", rate) + "m";
+        } else {
+            rateStr = String.format("%.0f", rate) + "kb";
         }
         if (max > kb) {
             maxSize = maxSize / kb;
             maxStr = String.format("%.1f", maxSize) + "m";
+        } else {
+            maxStr = String.format("%.0f", maxSize) + "kb";
         }
         log.info("SFTP 文件已传输 {} ({}%） 文件总大小 {} ", rateStr, percent, maxStr);
         monitor.setNote("SFTP 文件已传输 " + rateStr + " (" + percent + "%） 文件总大小 " + maxStr);
