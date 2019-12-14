@@ -17,6 +17,16 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
 
     private ProgressMonitor monitor;
 
+    private boolean enableMonitor;
+
+    public Ssh2ClientProgressMonitor() {
+        this.enableMonitor = true;
+    }
+
+    public Ssh2ClientProgressMonitor(boolean enableMonitor) {
+        this.enableMonitor = enableMonitor;
+    }
+
     /**
      * 当前接收的总字节数
      */
@@ -42,7 +52,9 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
             message = "SFTP 断点续传下载文件开始";
             log.info(message);
         }
-        monitor = new ProgressMonitor(null, message + ": " + remotePath, "", 0, (int) max);
+        if (enableMonitor) {
+            monitor = new ProgressMonitor(null, message + ": " + remotePath, "", 0, (int) max);
+        }
         this.max = max;
         this.count = 0;
         this.percent = -1;
@@ -58,9 +70,12 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
         String rateSize = handleFileSize(this.count);
         String maxSize = handleFileSize(max);
         log.info("SFTP 文件已传输 {} ({}%） 文件总大小 {} ", rateSize, percent, maxSize);
-        monitor.setNote("SFTP 文件已传输 " + rateSize + " (" + percent + "%） 文件总大小 " + maxSize);
-        monitor.setProgress((int) this.count);
-        return !(monitor.isCanceled());
+        if (enableMonitor) {
+            monitor.setNote("SFTP 文件已传输 " + rateSize + " (" + percent + "%） 文件总大小 " + maxSize);
+            monitor.setProgress((int) this.count);
+            return !(monitor.isCanceled());
+        }
+        return true;
     }
 
     private String handleFileSize(long fileSize) {
@@ -82,7 +97,9 @@ public class Ssh2ClientProgressMonitor implements SftpProgressMonitor {
 
     @Override
     public void end() {
-        monitor.close();
+        if (monitor != null) {
+            monitor.close();
+        }
         log.info("SFTP 文件传输结束.");
     }
 

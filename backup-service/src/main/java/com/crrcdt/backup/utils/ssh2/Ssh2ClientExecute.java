@@ -95,8 +95,11 @@ public class Ssh2ClientExecute {
             Vector vector;
             // 判断要下载的目标是否为目录
             if (sftpAttrs.isDir()) {
+                if (root == 0) {
+                    localDir = localDir + File.separator + new File(remotePath).getName();
+                }
                 root++;
-                File dir = new File(localDir + File.separator + new File(remotePath).getName());
+                File dir = new File(localDir);
                 // 创建目录
                 if (!dir.exists()) {
                     log.info("SFTP downloadFiles 本地存储目录{}不存在,创建目录", localDir);
@@ -127,7 +130,7 @@ public class Ssh2ClientExecute {
                     log.info("SFTP downloadFiles 目标文件为空,直接创建文件: {}", dir.getName());
                 } else {
                     // 断点续传下载
-                    sftpChannel.get(remotePath, localDir, new Ssh2ClientProgressMonitor(), ChannelSftp.RESUME);
+                    sftpChannel.get(remotePath, localDir, new Ssh2ClientProgressMonitor(false), ChannelSftp.RESUME);
                     long endTime1 = System.currentTimeMillis();
                     log.info("SFTP downloadFiles 下载文件完成,用时{}秒", (double) (endTime1 - startTime) / 1000);
                 }
