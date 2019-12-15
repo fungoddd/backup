@@ -235,14 +235,16 @@ public class Ssh2ClientExecute {
     }
 
     /**
-     * <p>关闭SFTP连接</p>
+     * <p>关闭SSH2连接</p>
      */
     void disconnect() throws Exception {
         try {
             if (sftpChannel != null && sftpChannel.getSession().isConnected()) {
+                log.info("关闭与{}服务器的连接",sftpChannel.getSession().getHost());
                 sftpChannel.getSession().disconnect();
             }
             if (execChannel != null && execChannel.getSession().isConnected()) {
+                log.info("关闭与{}服务器的连接",execChannel.getSession().getHost());
                 execChannel.getSession().disconnect();
             }
         } catch (JSchException e) {
@@ -250,7 +252,6 @@ public class Ssh2ClientExecute {
             throw e;
         } finally {
             if (sftpChannel != null) {
-                sftpChannel.quit();
                 sftpChannel.disconnect();
             }
             if (execChannel != null) {
